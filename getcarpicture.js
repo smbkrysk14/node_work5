@@ -10,15 +10,16 @@ var path = require('path');
 // 階層の指定
 var LINK_LEVEL = 1;
 // 基準となるページURL
-var TARGET_URL = "http://www.goo-net.com/usedcar/spread/goo/19/700630033930151009001.html";
+var TARGET_URL = "http://www.goo-net.com/usedcar/spread/goo/19/700630033930151009001.html/";
 var list = {};
-
+//
 // メイン処理
 downloadRec(TARGET_URL, 0);
 
 // 指定のurlを最大レベルlevelまでダウンロード
 function downloadRec(url, level) {
-
+  
+  console.log("①");
   // 最大レベルチェック
   if (level >= LINK_LEVEL) return;
   // 既出のサイトは無視する
@@ -27,12 +28,12 @@ function downloadRec(url, level) {
 
   // 基準ページ以外なら無視する
   var us = TARGET_URL.split("/");
-
+  
   // 末尾の要素を削除
   us.pop();
-
+  console.log("[us] : " + us);
   var base = us.join("/");
-
+  console.log("[base] : " + base);
   if (url.indexOf(base) < 0) return;
 
   // HTMLを取得する
@@ -58,17 +59,22 @@ function downloadRec(url, level) {
       url += "index.html"; // インデックスを自動追加
 
     }
-    var savepath = url.split("/").slice(2).join("/");
+    //var savepath = url.split("/").slice(2).join("/");
+    var savepath = "output";
     checkSaveDir(savepath);
     //console.log(savepath);
+    console.log($.html());
     fs.writeFileSync(savepath, $.html());
   });
 }
 
 // 保存先のディレクトリが存在するか確認
 function checkSaveDir(fname) {
+  /*
+  console.log("[fname] : " + fname);
   // ディレクトリ部分だけ取り出す
   var dir = path.dirname(fname);
+  console.log("[dir] : " + dir);
   // ディレクトリを再帰的に作成する
   var dirlist = dir.split("/");
   var p = "";
@@ -77,6 +83,14 @@ function checkSaveDir(fname) {
     if (!fs.existsSync(p)) {
       fs.mkdirSync(p);
     }
+  }
+  */
+  console.log("[fname] : " + fname);
+  console.log("existsSyncを実行");
+  if (!fs.existsSync(fname)) {
+    console.log("existsSync：true");
+    fs.mkdirSync(fname);
+    console.log("mkdirSync実行後");
   }
 }
 
